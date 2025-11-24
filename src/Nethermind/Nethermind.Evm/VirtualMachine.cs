@@ -240,6 +240,10 @@ public unsafe partial class VirtualMachine(
                 {
                     // Restore the previous state from the stack and mark it as a continuation.
                     _currentState = _stateStack.Pop();
+
+                    if (Out.IsTargetBlock)
+                        Out.Log($"evm stack pop stackSize={_stateStack.Count} depth={_currentState.Env.CallDepth} refund={_currentState.Refund}");
+
                     _currentState.IsContinuation = true;
                     // Refund the remaining gas from the completed call frame.
                     _currentState.GasAvailable += previousState.GasAvailable;
@@ -656,6 +660,9 @@ public unsafe partial class VirtualMachine(
         _currentState = _stateStack.Pop();
         _currentState.IsContinuation = true;
 
+        if (Out.IsTargetBlock)
+            Out.Log($"evm stack pop stackSize={_stateStack.Count} depth={_currentState.Env.CallDepth} refund={_currentState.Refund}");
+
         shouldExit = false;
         return default;
     }
@@ -672,6 +679,9 @@ public unsafe partial class VirtualMachine(
     /// </param>
     protected void PrepareNextCallFrame(in CallResult callResult, ref ZeroPaddedSpan previousCallOutput)
     {
+        if (Out.IsTargetBlock)
+            Out.Log($"evm stack push stackSize={_stateStack.Count} depth={_currentState.Env.CallDepth} refund={_currentState.Refund}");
+
         // Push the current execution state onto the state stack so it can be restored later.
         _stateStack.Push(_currentState);
 
@@ -741,6 +751,9 @@ public unsafe partial class VirtualMachine(
         _currentState.Dispose();
         _currentState = _stateStack.Pop();
         _currentState.IsContinuation = true;
+
+        if (Out.IsTargetBlock)
+            Out.Log($"evm stack pop stackSize={_stateStack.Count} depth={_currentState.Env.CallDepth} refund={_currentState.Refund}");
 
         // Return null to indicate that the failure was handled and execution should continue in the parent frame.
         shouldExit = false;
