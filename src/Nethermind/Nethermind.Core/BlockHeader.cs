@@ -39,7 +39,6 @@ public static class Out
             Console.WriteLine(GetCallStackString());
 
         Console.WriteLine(log);
-        Console.WriteLine(log);
     }
 
     public static void Log(string log)

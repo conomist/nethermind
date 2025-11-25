@@ -29,6 +29,7 @@ namespace Nethermind.Core.Collections
         {
             if (snapshot >= _set.Count)
             {
+                Out.LogAlways($"Restore snapshot {snapshot} is invalid for JournalSet with Count {_set.Count}");
                 ThrowInvalidRestore(snapshot);
             }
 
