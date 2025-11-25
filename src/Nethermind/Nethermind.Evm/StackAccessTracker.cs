@@ -80,6 +80,9 @@ public struct StackAccessTracker : IDisposable
 
     public void TakeSnapshot()
     {
+        if (Out.IsTargetBlock)
+            Out.Log("state journal accesslist snapshot");
+
         _addressesSnapshots = _trackingState.AccessedAddresses.TakeSnapshot();
         _storageKeysSnapshots = _trackingState.AccessedStorageCells.TakeSnapshot();
         _destroyListSnapshots = _trackingState.DestroyList.TakeSnapshot();
@@ -127,7 +130,7 @@ public struct StackAccessTracker : IDisposable
         private void Clear()
         {
             if (Out.IsTargetBlock)
-                Out.Log("state journal accesslist revert");
+                Out.Log("state journal accesslist clear");
 
             AccessedAddresses.Clear();
             AccessedStorageCells.Clear();
